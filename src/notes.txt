@@ -1,3 +1,5 @@
+# T I P S
+
 - Start by creating the models.
 
 - Either take values via the constructor or instantiate within the class, otherwise there's a risk of forgetting to initialize
@@ -10,6 +12,8 @@ others don't take much time.
 
 - Flow of request
     Client -> Controller -> Service -> Repository
+
+# C O N T R O L L E R S  and  D T O
 
 - Many times when a client requests something from a Controller, the controller might not want to give all the details to the client
   in other words they may wanna hide some internal data from the clients and return only a part of the data in response.
@@ -32,3 +36,30 @@ others don't take much time.
                instead of passing the params individually we'd pass a requestDto.
                So suppose a frontend engineer asks you what params would you need me to send to call your API/service. To which you'd
                refer to the documentation of requestDto class which they can look and know which request object to pass.
+
+# S E R V I C E S
+
+- Services - As a service could be used by multiple controllers, so services should be agnostic to the request whereas controllers
+             should be tightly coupled with the request (as controllers are by definition specific for every request).
+
+# R E P O S I T O R I E S
+
+- In this case we'll not be using any framework or DB. Rather we'd emulate a DB in memory. In other words we've to create a class
+  that is implementing the features of a DB.
+
+- It contains the code that's necessary to access the database layer. This layer also holds the set of codes that allow you to
+  manipulate various aspects of the database, such as connection details and SQL statements.
+
+- The use of a particular repository is to interact with the DB tables which either stores the corresponding entity or all the
+  mapping tables or all the tables of the attributes which compose this entity.
+  For ex:- ParkingLotRepository interacts with ParkingLot table, EntryGate table, ParkingFloor table etc.
+
+- To emulate a DB in our repository we'd use HashMaps to represent a table and based on the access queries we'd also maintain
+  multiple indexes which will be again a HashMap.
+  For ex:- we'd most likely fetch a ParkingLot based on some id passed into the query.
+           We'd maintain an index as Map<Long, ParkingLot> (for Long id)
+           But based on different access queries we might also want to fetch a ParkingLot given an EntryGate.
+           So, we'd have to maintain another index as Map<EntryGate, ParkingLot>
+
+// Creation of indexes can slow down our writes as we've to update the HashMap on every save query.
+// But it will immensely improve our reads.
